@@ -1,34 +1,37 @@
-local flying = false
-local speed = 50 -- You can change the flying speed here
-
--- Reference to the player's character and humanoid
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
-local rootPart = character:WaitForChild("HumanoidRootPart")
 
--- Create a BodyVelocity to handle flying
-local bodyVelocity = Instance.new("BodyVelocity")
-bodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000) -- Strong force to keep you floating
-bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-bodyVelocity.Parent = rootPart
-
--- Function to toggle flying
-local function toggleFlying()
-    flying = not flying
-
-    if flying then
-        bodyVelocity.Velocity = Vector3.new(0, speed, 0) -- Set flying speed upwards
-    else
-        bodyVelocity.Velocity = Vector3.new(0, 0, 0) -- Stop flying
+-- Function to teleport player behind the one who hit them
+local function teleportBehind(attacker)
+    -- Check if attacker is valid
+    if attacker and attacker.Character then
+        local attackerHumanoidRootPart = attacker.Character:WaitForChild("HumanoidRootPart")
+        
+        -- Calculate position behind the attacker
+        local direction = (character.HumanoidRootPart.Position - attackerHumanoidRootPart.Position).unit
+        local behindPosition = attackerHumanoidRootPart.Position + direction * -5  -- Adjust distance here
+        
+        -- Move the player behind the attacker
+        character.HumanoidRootPart.CFrame = CFrame.new(behindPosition)
     end
 end
 
--- Detect key press for flying toggle
-game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-
-    if input.KeyCode == Enum.KeyCode.F then
-        toggleFlying()
+-- Connect to the humanoid's "TakeDamage" event to detect when the player is hit
+humanoid.HealthChanged:Connect(function(health)
+    if health < humanoid.Health then  -- Only trigger when health decreases (hit)
+        local hitPlayer = nil
+        
+        -- Check if the damage source is another player
+        if humanoid.LastDamageSource and humanoid.LastDamageSource.Parent then
+            local lastSource = humanoid.LastDamageSource.Parent
+            if lastSource:IsA("Model") and game.Players:GetPlayerFromCharacter(lastSource) then
+                hitPlayer = game.Players:GetPlayerFromCharacter(lastSource)
+            end
+        end
+        
+        if hitPlayer then
+            teleportBehind(hitPlayer)
+        end
     end
 end)
