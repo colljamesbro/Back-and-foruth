@@ -1,71 +1,34 @@
--- Variables
+local flying = false
+local speed = 50 -- You can change the flying speed here
+
+-- Reference to the player's character and humanoid
 local player = game.Players.LocalPlayer
-local runService = game:GetService("RunService")
-local targetPlayer1, targetPlayer2
-local moveSpeed = 50  -- Speed of movement
-local direction = 1   -- To toggle between players (1 or -1)
-local moveInterval = 2 -- Time to stay at each player before moving to the other
-local isMoving = false -- Whether or not the player is moving
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local rootPart = character:WaitForChild("HumanoidRootPart")
 
--- Function to find two random players (excluding the local player)
-local function getRandomPlayers()
-    local players = {}
-    for _, p in pairs(game.Players:GetPlayers()) do
-        if p ~= player then
-            table.insert(players, p)
-        end
-    end
+-- Create a BodyVelocity to handle flying
+local bodyVelocity = Instance.new("BodyVelocity")
+bodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000) -- Strong force to keep you floating
+bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+bodyVelocity.Parent = rootPart
 
-    -- Randomly select two players
-    if #players > 1 then
-        local selectedPlayers = {players[math.random(1, #players)], players[math.random(1, #players)]}
-        -- Ensure both selected players are different
-        if selectedPlayers[1] == selectedPlayers[2] then
-            selectedPlayers[2] = players[math.random(1, #players)]
-        end
-        targetPlayer1 = selectedPlayers[1]
-        targetPlayer2 = selectedPlayers[2]
-    end
-end
+-- Function to toggle flying
+local function toggleFlying()
+    flying = not flying
 
--- Function to move between two players
-local function moveBetweenPlayers()
-    if targetPlayer1 and targetPlayer2 then
-        local targetPosition = (direction == 1) and targetPlayer1.Character and targetPlayer1.Character:FindFirstChild("HumanoidRootPart").Position or targetPlayer2.Character and targetPlayer2.Character:FindFirstChild("HumanoidRootPart").Position
-        
-        if targetPosition then
-            -- Move the local player toward the target position
-            local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
-                humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position:Lerp(targetPosition, moveSpeed * runService.RenderStepped:Wait()))
-            end
-        end
-        
-        -- Toggle direction after the interval
-        wait(moveInterval)
-        direction = -direction  -- Flip direction
-    end
-end
-
--- Function to start or stop the movement
-local function toggleMovement()
-    if isMoving then
-        isMoving = false  -- Stop movement
+    if flying then
+        bodyVelocity.Velocity = Vector3.new(0, speed, 0) -- Set flying speed upwards
     else
-        isMoving = true   -- Start movement
-        getRandomPlayers()  -- Get random players
-        runService.RenderStepped:Connect(function()
-            if isMoving then
-                moveBetweenPlayers()
-            end
-        end)
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0) -- Stop flying
     end
 end
 
--- Listen for key press (F key) to toggle movement
+-- Detect key press for flying toggle
 game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
+
     if input.KeyCode == Enum.KeyCode.F then
-        toggleMovement()  -- Toggle the movement on/off when F key is pressed
+        toggleFlying()
     end
 end)
