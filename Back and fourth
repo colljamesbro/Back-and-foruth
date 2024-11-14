@@ -5,6 +5,7 @@ local targetPlayer1, targetPlayer2
 local moveSpeed = 50  -- Speed of movement
 local direction = 1   -- To toggle between players (1 or -1)
 local moveInterval = 2 -- Time to stay at each player before moving to the other
+local isMoving = false -- Whether or not the player is moving
 
 -- Function to find two random players (excluding the local player)
 local function getRandomPlayers()
@@ -46,10 +47,25 @@ local function moveBetweenPlayers()
     end
 end
 
--- Initialize the random players
-getRandomPlayers()
+-- Function to start or stop the movement
+local function toggleMovement()
+    if isMoving then
+        isMoving = false  -- Stop movement
+    else
+        isMoving = true   -- Start movement
+        getRandomPlayers()  -- Get random players
+        runService.RenderStepped:Connect(function()
+            if isMoving then
+                moveBetweenPlayers()
+            end
+        end)
+    end
+end
 
--- Start the movement between players
-runService.RenderStepped:Connect(function()
-    moveBetweenPlayers()
+-- Listen for key press (F key) to toggle movement
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.F then
+        toggleMovement()  -- Toggle the movement on/off when F key is pressed
+    end
 end)
