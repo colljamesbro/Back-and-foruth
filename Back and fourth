@@ -1,159 +1,121 @@
--- GUI Setup
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+-- Services
+local Player = game.Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
--- Create Password GUI
-local screenGui = Instance.new("ScreenGui", playerGui)
-screenGui.Name = "PasswordHub"
+-- Variables
+local password = "coll" -- The correct password
+local passwordCorrect = false
 
--- Password Entry UI
-local passwordFrame = Instance.new("Frame", screenGui)
-passwordFrame.Size = UDim2.new(0.4, 0, 0.4, 0)
-passwordFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+-- Create the main password entry GUI
+local passwordFrame = Instance.new("Frame")
+passwordFrame.Size = UDim2.new(0, 300, 0, 200)
+passwordFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 passwordFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+passwordFrame.BackgroundTransparency = 0.3
+passwordFrame.Parent = PlayerGui
 
-local passwordLabel = Instance.new("TextLabel", passwordFrame)
-passwordLabel.Size = UDim2.new(1, 0, 0.2, 0)
+local passwordLabel = Instance.new("TextLabel")
+passwordLabel.Size = UDim2.new(1, 0, 0.3, 0)
 passwordLabel.Position = UDim2.new(0, 0, 0, 0)
 passwordLabel.Text = "Enter Password"
-passwordLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-passwordLabel.TextScaled = true
+passwordLabel.TextColor3 = Color3.new(1, 1, 1)
+passwordLabel.TextSize = 20
+passwordLabel.BackgroundTransparency = 1
+passwordLabel.Parent = passwordFrame
 
-local passwordInput = Instance.new("TextBox", passwordFrame)
-passwordInput.Size = UDim2.new(0.8, 0, 0.2, 0)
-passwordInput.Position = UDim2.new(0.1, 0, 0.3, 0)
-passwordInput.PlaceholderText = "Enter password"
-passwordInput.TextColor3 = Color3.fromRGB(0, 0, 0)
-passwordInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+local passwordBox = Instance.new("TextBox")
+passwordBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+passwordBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+passwordBox.PlaceholderText = "Password"
+passwordBox.TextColor3 = Color3.new(1, 1, 1)
+passwordBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+passwordBox.TextSize = 18
+passwordBox.Parent = passwordFrame
 
-local passwordButton = Instance.new("TextButton", passwordFrame)
-passwordButton.Size = UDim2.new(0.8, 0, 0.2, 0)
-passwordButton.Position = UDim2.new(0.1, 0, 0.6, 0)
-passwordButton.Text = "Submit"
-passwordButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+local submitButton = Instance.new("TextButton")
+submitButton.Size = UDim2.new(0.6, 0, 0.2, 0)
+submitButton.Position = UDim2.new(0.2, 0, 0.7, 0)
+submitButton.Text = "Submit"
+submitButton.TextColor3 = Color3.new(1, 1, 1)
+submitButton.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
+submitButton.TextSize = 18
+submitButton.Parent = passwordFrame
 
--- Points Adjustment Tab (Hidden Initially)
-local sideTab = Instance.new("Frame", screenGui)
-sideTab.Size = UDim2.new(0.3, 0, 1, 0)
-sideTab.Position = UDim2.new(1, 0, 0, 0)  -- Position it offscreen initially
-sideTab.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-sideTab.Visible = false  -- Hide the side tab initially
+-- Create the side tab GUI (hidden initially)
+local sideTab = Instance.new("Frame")
+sideTab.Size = UDim2.new(0, 200, 0.5, 0)
+sideTab.Position = UDim2.new(1, -200, 0.25, 0)
+sideTab.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+sideTab.BackgroundTransparency = 0.3
+sideTab.Visible = false
+sideTab.Parent = PlayerGui
 
-local pointsLabel = Instance.new("TextLabel", sideTab)
-pointsLabel.Size = UDim2.new(1, 0, 0.2, 0)
-pointsLabel.Text = "Set Bananas & Snowflakes"
-pointsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-pointsLabel.TextScaled = true
+local snowflakeLabel = Instance.new("TextLabel")
+snowflakeLabel.Size = UDim2.new(1, 0, 0.2, 0)
+snowflakeLabel.Position = UDim2.new(0, 0, 0, 0)
+snowflakeLabel.Text = "Set Snowflakes"
+snowflakeLabel.TextColor3 = Color3.new(1, 1, 1)
+snowflakeLabel.TextSize = 18
+snowflakeLabel.BackgroundTransparency = 1
+snowflakeLabel.Parent = sideTab
 
-local bananasInput = Instance.new("TextBox", sideTab)
-bananasInput.Size = UDim2.new(0.8, 0, 0.2, 0)
-bananasInput.Position = UDim2.new(0.1, 0, 0.3, 0)
-bananasInput.PlaceholderText = "Enter Bananas"
-bananasInput.TextColor3 = Color3.fromRGB(0, 0, 0)
-bananasInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+local snowflakeBox = Instance.new("TextBox")
+snowflakeBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+snowflakeBox.Position = UDim2.new(0.1, 0, 0.2, 0)
+snowflakeBox.PlaceholderText = "Enter Amount"
+snowflakeBox.TextColor3 = Color3.new(1, 1, 1)
+snowflakeBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+snowflakeBox.TextSize = 18
+snowflakeBox.Parent = sideTab
 
-local snowflakesInput = Instance.new("TextBox", sideTab)
-snowflakesInput.Size = UDim2.new(0.8, 0, 0.2, 0)
-snowflakesInput.Position = UDim2.new(0.1, 0, 0.6, 0)
-snowflakesInput.PlaceholderText = "Enter Snowflakes"
-snowflakesInput.TextColor3 = Color3.fromRGB(0, 0, 0)
-snowflakesInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+local bananaLabel = Instance.new("TextLabel")
+bananaLabel.Size = UDim2.new(1, 0, 0.2, 0)
+bananaLabel.Position = UDim2.new(0, 0, 0.4, 0)
+bananaLabel.Text = "Set Bananas"
+bananaLabel.TextColor3 = Color3.new(1, 1, 1)
+bananaLabel.TextSize = 18
+bananaLabel.BackgroundTransparency = 1
+bananaLabel.Parent = sideTab
 
-local setPointsButton = Instance.new("TextButton", sideTab)
-setPointsButton.Size = UDim2.new(0.8, 0, 0.2, 0)
-setPointsButton.Position = UDim2.new(0.1, 0, 0.9, 0)
-setPointsButton.Text = "Set Points"
-setPointsButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+local bananaBox = Instance.new("TextBox")
+bananaBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+bananaBox.Position = UDim2.new(0.1, 0, 0.6, 0)
+bananaBox.PlaceholderText = "Enter Amount"
+bananaBox.TextColor3 = Color3.new(1, 1, 1)
+bananaBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+bananaBox.TextSize = 18
+bananaBox.Parent = sideTab
 
--- Password Validation
-local correctPassword = "password123"  -- Set your password here
+local confirmButton = Instance.new("TextButton")
+confirmButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+confirmButton.Position = UDim2.new(0.1, 0, 0.8, 0)
+confirmButton.Text = "Confirm Changes"
+confirmButton.TextColor3 = Color3.new(1, 1, 1)
+confirmButton.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
+confirmButton.TextSize = 18
+confirmButton.Parent = sideTab
 
-passwordButton.MouseButton1Click:Connect(function()
-    if passwordInput.Text == correctPassword then
-        -- Hide Password GUI and Show Points Tab
+-- Submit button logic
+submitButton.MouseButton1Click:Connect(function()
+    if passwordBox.Text == password then
+        passwordCorrect = true
         passwordFrame.Visible = false
         sideTab.Visible = true
-
-        -- Slide the side tab into view
-        sideTab:TweenPosition(UDim2.new(0.7, 0, 0, 0), "Out", "Sine", 0.5, true)
     else
-        passwordInput.Text = ""  -- Clear input if wrong password
-        passwordInput.PlaceholderText = "Incorrect password. Try again."
+        passwordBox.Text = "Incorrect Password!"
     end
 end)
 
--- Points Set Functionality
-setPointsButton.MouseButton1Click:Connect(function()
-    local bananas = tonumber(bananasInput.Text)
-    local snowflakes = tonumber(snowflakesInput.Text)
+-- Confirm button logic
+confirmButton.MouseButton1Click:Connect(function()
+    local snowflakes = tonumber(snowflakeBox.Text)
+    local bananas = tonumber(bananaBox.Text)
 
-    if bananas and bananas >= 0 then
-        -- Ensure leaderstats folder exists and Bananas stat exists
-        if player:FindFirstChild("leaderstats") then
-            local leaderstats = player.leaderstats
-            local bananasStat = leaderstats:FindFirstChild("Bananas")
-
-            if bananasStat then
-                bananasStat.Value = bananas  -- Set the Bananas
-                bananasInput.Text = ""  -- Clear input
-                print("Bananas set to " .. bananas)
-            else
-                -- If Bananas stat is missing, print an error
-                bananasInput.Text = ""
-                bananasInput.PlaceholderText = "No Bananas stat found"
-            end
-        else
-            -- If leaderstats is missing, print an error
-            bananasInput.Text = ""
-            bananasInput.PlaceholderText = "No leaderstats found"
-        end
+    if snowflakes and bananas then
+        -- Replace these with actual logic to set values
+        print("Snowflakes set to:", snowflakes)
+        print("Bananas set to:", bananas)
     else
-        bananasInput.Text = ""
-        bananasInput.PlaceholderText = "Enter a valid number for Bananas"
+        print("Please enter valid numbers!")
     end
-
-    if snowflakes and snowflakes >= 0 then
-        -- Ensure Snowflakes stat exists
-        if player:FindFirstChild("leaderstats") then
-            local leaderstats = player.leaderstats
-            local snowflakesStat = leaderstats:FindFirstChild("Snowflakes")
-
-            if snowflakesStat then
-                snowflakesStat.Value = snowflakes  -- Set the Snowflakes
-                snowflakesInput.Text = ""  -- Clear input
-                print("Snowflakes set to " .. snowflakes)
-            else
-                -- If Snowflakes stat is missing, print an error
-                snowflakesInput.Text = ""
-                snowflakesInput.PlaceholderText = "No Snowflakes stat found"
-            end
-        else
-            -- If leaderstats is missing, print an error
-            snowflakesInput.Text = ""
-            snowflakesInput.PlaceholderText = "No leaderstats found"
-        end
-    else
-        snowflakesInput.Text = ""
-        snowflakesInput.PlaceholderText = "Enter a valid number for Snowflakes"
-    end
-end)
-
--- Ensure leaderstats and Bananas & Snowflakes are created for the player when they join
-game.Players.PlayerAdded:Connect(function(player)
-    -- Create leaderstats folder for the player
-    local leaderstats = Instance.new("Folder")
-    leaderstats.Name = "leaderstats"
-    leaderstats.Parent = player
-
-    -- Create the Bananas stat
-    local bananas = Instance.new("IntValue")
-    bananas.Name = "Bananas"
-    bananas.Value = 0  -- Default Bananas, you can set this to any value
-    bananas.Parent = leaderstats
-
-    -- Create the Snowflakes stat
-    local snowflakes = Instance.new("IntValue")
-    snowflakes.Name = "Snowflakes"
-    snowflakes.Value = 0  -- Default Snowflakes, you can set this to any value
-    snowflakes.Parent = leaderstats
 end)
