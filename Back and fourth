@@ -1,121 +1,128 @@
 -- Services
-local Player = game.Players.LocalPlayer
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
 -- Variables
 local password = "coll" -- The correct password
 local passwordCorrect = false
 
--- Create the main password entry GUI
-local passwordFrame = Instance.new("Frame")
-passwordFrame.Size = UDim2.new(0, 300, 0, 200)
-passwordFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
-passwordFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-passwordFrame.BackgroundTransparency = 0.3
-passwordFrame.Parent = PlayerGui
+-- Function to create GUI elements
+local function createGUI()
+    -- Create the main password entry GUI
+    local passwordFrame = Instance.new("Frame")
+    passwordFrame.Size = UDim2.new(0, 300, 0, 200)
+    passwordFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+    passwordFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    passwordFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    passwordFrame.BackgroundTransparency = 0.3
+    passwordFrame.Parent = PlayerGui
 
-local passwordLabel = Instance.new("TextLabel")
-passwordLabel.Size = UDim2.new(1, 0, 0.3, 0)
-passwordLabel.Position = UDim2.new(0, 0, 0, 0)
-passwordLabel.Text = "Enter Password"
-passwordLabel.TextColor3 = Color3.new(1, 1, 1)
-passwordLabel.TextSize = 20
-passwordLabel.BackgroundTransparency = 1
-passwordLabel.Parent = passwordFrame
+    local passwordLabel = Instance.new("TextLabel")
+    passwordLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    passwordLabel.Text = "Enter Password"
+    passwordLabel.TextColor3 = Color3.new(1, 1, 1)
+    passwordLabel.TextSize = 20
+    passwordLabel.BackgroundTransparency = 1
+    passwordLabel.Parent = passwordFrame
 
-local passwordBox = Instance.new("TextBox")
-passwordBox.Size = UDim2.new(0.8, 0, 0.2, 0)
-passwordBox.Position = UDim2.new(0.1, 0, 0.4, 0)
-passwordBox.PlaceholderText = "Password"
-passwordBox.TextColor3 = Color3.new(1, 1, 1)
-passwordBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-passwordBox.TextSize = 18
-passwordBox.Parent = passwordFrame
+    local passwordBox = Instance.new("TextBox")
+    passwordBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+    passwordBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+    passwordBox.PlaceholderText = "Password"
+    passwordBox.TextColor3 = Color3.new(1, 1, 1)
+    passwordBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    passwordBox.TextSize = 18
+    passwordBox.Parent = passwordFrame
 
-local submitButton = Instance.new("TextButton")
-submitButton.Size = UDim2.new(0.6, 0, 0.2, 0)
-submitButton.Position = UDim2.new(0.2, 0, 0.7, 0)
-submitButton.Text = "Submit"
-submitButton.TextColor3 = Color3.new(1, 1, 1)
-submitButton.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
-submitButton.TextSize = 18
-submitButton.Parent = passwordFrame
+    local submitButton = Instance.new("TextButton")
+    submitButton.Size = UDim2.new(0.6, 0, 0.2, 0)
+    submitButton.Position = UDim2.new(0.2, 0, 0.7, 0)
+    submitButton.Text = "Submit"
+    submitButton.TextColor3 = Color3.new(1, 1, 1)
+    submitButton.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
+    submitButton.TextSize = 18
+    submitButton.Parent = passwordFrame
 
--- Create the side tab GUI (hidden initially)
-local sideTab = Instance.new("Frame")
-sideTab.Size = UDim2.new(0, 200, 0.5, 0)
-sideTab.Position = UDim2.new(1, -200, 0.25, 0)
-sideTab.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-sideTab.BackgroundTransparency = 0.3
-sideTab.Visible = false
-sideTab.Parent = PlayerGui
+    -- Create the side tab GUI (hidden initially)
+    local sideTab = Instance.new("Frame")
+    sideTab.Size = UDim2.new(0, 200, 0.5, 0)
+    sideTab.Position = UDim2.new(1, -200, 0.25, 0)
+    sideTab.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    sideTab.BackgroundTransparency = 0.3
+    sideTab.Visible = false
+    sideTab.Parent = PlayerGui
 
-local snowflakeLabel = Instance.new("TextLabel")
-snowflakeLabel.Size = UDim2.new(1, 0, 0.2, 0)
-snowflakeLabel.Position = UDim2.new(0, 0, 0, 0)
-snowflakeLabel.Text = "Set Snowflakes"
-snowflakeLabel.TextColor3 = Color3.new(1, 1, 1)
-snowflakeLabel.TextSize = 18
-snowflakeLabel.BackgroundTransparency = 1
-snowflakeLabel.Parent = sideTab
+    local snowflakeLabel = Instance.new("TextLabel")
+    snowflakeLabel.Size = UDim2.new(1, 0, 0.2, 0)
+    snowflakeLabel.Position = UDim2.new(0, 0, 0, 0)
+    snowflakeLabel.Text = "Set Snowflakes"
+    snowflakeLabel.TextColor3 = Color3.new(1, 1, 1)
+    snowflakeLabel.TextSize = 18
+    snowflakeLabel.BackgroundTransparency = 1
+    snowflakeLabel.Parent = sideTab
 
-local snowflakeBox = Instance.new("TextBox")
-snowflakeBox.Size = UDim2.new(0.8, 0, 0.2, 0)
-snowflakeBox.Position = UDim2.new(0.1, 0, 0.2, 0)
-snowflakeBox.PlaceholderText = "Enter Amount"
-snowflakeBox.TextColor3 = Color3.new(1, 1, 1)
-snowflakeBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-snowflakeBox.TextSize = 18
-snowflakeBox.Parent = sideTab
+    local snowflakeBox = Instance.new("TextBox")
+    snowflakeBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+    snowflakeBox.Position = UDim2.new(0.1, 0, 0.2, 0)
+    snowflakeBox.PlaceholderText = "Enter Amount"
+    snowflakeBox.TextColor3 = Color3.new(1, 1, 1)
+    snowflakeBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    snowflakeBox.TextSize = 18
+    snowflakeBox.Parent = sideTab
 
-local bananaLabel = Instance.new("TextLabel")
-bananaLabel.Size = UDim2.new(1, 0, 0.2, 0)
-bananaLabel.Position = UDim2.new(0, 0, 0.4, 0)
-bananaLabel.Text = "Set Bananas"
-bananaLabel.TextColor3 = Color3.new(1, 1, 1)
-bananaLabel.TextSize = 18
-bananaLabel.BackgroundTransparency = 1
-bananaLabel.Parent = sideTab
+    local bananaLabel = Instance.new("TextLabel")
+    bananaLabel.Size = UDim2.new(1, 0, 0.2, 0)
+    bananaLabel.Position = UDim2.new(0, 0, 0.4, 0)
+    bananaLabel.Text = "Set Bananas"
+    bananaLabel.TextColor3 = Color3.new(1, 1, 1)
+    bananaLabel.TextSize = 18
+    bananaLabel.BackgroundTransparency = 1
+    bananaLabel.Parent = sideTab
 
-local bananaBox = Instance.new("TextBox")
-bananaBox.Size = UDim2.new(0.8, 0, 0.2, 0)
-bananaBox.Position = UDim2.new(0.1, 0, 0.6, 0)
-bananaBox.PlaceholderText = "Enter Amount"
-bananaBox.TextColor3 = Color3.new(1, 1, 1)
-bananaBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-bananaBox.TextSize = 18
-bananaBox.Parent = sideTab
+    local bananaBox = Instance.new("TextBox")
+    bananaBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+    bananaBox.Position = UDim2.new(0.1, 0, 0.6, 0)
+    bananaBox.PlaceholderText = "Enter Amount"
+    bananaBox.TextColor3 = Color3.new(1, 1, 1)
+    bananaBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    bananaBox.TextSize = 18
+    bananaBox.Parent = sideTab
 
-local confirmButton = Instance.new("TextButton")
-confirmButton.Size = UDim2.new(0.8, 0, 0.2, 0)
-confirmButton.Position = UDim2.new(0.1, 0, 0.8, 0)
-confirmButton.Text = "Confirm Changes"
-confirmButton.TextColor3 = Color3.new(1, 1, 1)
-confirmButton.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
-confirmButton.TextSize = 18
-confirmButton.Parent = sideTab
+    local confirmButton = Instance.new("TextButton")
+    confirmButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+    confirmButton.Position = UDim2.new(0.1, 0, 0.8, 0)
+    confirmButton.Text = "Confirm Changes"
+    confirmButton.TextColor3 = Color3.new(1, 1, 1)
+    confirmButton.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
+    confirmButton.TextSize = 18
+    confirmButton.Parent = sideTab
 
--- Submit button logic
-submitButton.MouseButton1Click:Connect(function()
-    if passwordBox.Text == password then
-        passwordCorrect = true
-        passwordFrame.Visible = false
-        sideTab.Visible = true
-    else
-        passwordBox.Text = "Incorrect Password!"
-    end
-end)
+    -- Submit button logic
+    submitButton.MouseButton1Click:Connect(function()
+        if passwordBox.Text == password then
+            passwordCorrect = true
+            passwordFrame.Visible = false
+            sideTab.Visible = true
+        else
+            passwordBox.Text = "Incorrect Password!"
+        end
+    end)
 
--- Confirm button logic
-confirmButton.MouseButton1Click:Connect(function()
-    local snowflakes = tonumber(snowflakeBox.Text)
-    local bananas = tonumber(bananaBox.Text)
+    -- Confirm button logic
+    confirmButton.MouseButton1Click:Connect(function()
+        local snowflakes = tonumber(snowflakeBox.Text)
+        local bananas = tonumber(bananaBox.Text)
 
-    if snowflakes and bananas then
-        -- Replace these with actual logic to set values
-        print("Snowflakes set to:", snowflakes)
-        print("Bananas set to:", bananas)
-    else
-        print("Please enter valid numbers!")
-    end
-end)
+        if snowflakes and bananas then
+            -- Replace these with actual logic to set values
+            print("Snowflakes set to:", snowflakes)
+            print("Bananas set to:", bananas)
+        else
+            print("Please enter valid numbers!")
+        end
+    end)
+end
+
+-- Run the function to create the GUI
+createGUI()
