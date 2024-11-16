@@ -80,4 +80,88 @@ passwordButton.MouseButton1Click:Connect(function()
         passwordInput.Text = ""  -- Clear input if wrong password
         passwordInput.PlaceholderText = "Incorrect password. Try again."
     end
-end
+end)
+
+-- Points Set Functionality
+setPointsButton.MouseButton1Click:Connect(function()
+    local bananas = tonumber(bananasInput.Text)
+    local snowflakes = tonumber(snowflakesInput.Text)
+
+    -- Check for valid Bananas input
+    if bananas and bananas >= 0 then
+        -- Ensure leaderstats folder exists and Bananas stat exists
+        if player:FindFirstChild("leaderstats") then
+            local leaderstats = player.leaderstats
+            local bananasStat = leaderstats:FindFirstChild("Bananas")
+
+            if bananasStat then
+                bananasStat.Value = bananas  -- Set the Bananas
+                bananasInput.Text = ""  -- Clear input
+                print("Bananas set to " .. bananas)
+            else
+                -- If Bananas stat is missing, print an error
+                bananasInput.Text = ""
+                bananasInput.PlaceholderText = "No Bananas stat found"
+                print("Error: No Bananas stat found.")
+            end
+        else
+            -- If leaderstats is missing, print an error
+            bananasInput.Text = ""
+            bananasInput.PlaceholderText = "No leaderstats found"
+            print("Error: No leaderstats found.")
+        end
+    else
+        bananasInput.Text = ""
+        bananasInput.PlaceholderText = "Enter a valid number for Bananas"
+        print("Invalid Bananas input.")
+    end
+
+    -- Check for valid Snowflakes input
+    if snowflakes and snowflakes >= 0 then
+        -- Ensure Snowflakes stat exists
+        if player:FindFirstChild("leaderstats") then
+            local leaderstats = player.leaderstats
+            local snowflakesStat = leaderstats:FindFirstChild("Snowflakes")
+
+            if snowflakesStat then
+                snowflakesStat.Value = snowflakes  -- Set the Snowflakes
+                snowflakesInput.Text = ""  -- Clear input
+                print("Snowflakes set to " .. snowflakes)
+            else
+                -- If Snowflakes stat is missing, print an error
+                snowflakesInput.Text = ""
+                snowflakesInput.PlaceholderText = "No Snowflakes stat found"
+                print("Error: No Snowflakes stat found.")
+            end
+        else
+            -- If leaderstats is missing, print an error
+            snowflakesInput.Text = ""
+            snowflakesInput.PlaceholderText = "No leaderstats found"
+            print("Error: No leaderstats found.")
+        end
+    else
+        snowflakesInput.Text = ""
+        snowflakesInput.PlaceholderText = "Enter a valid number for Snowflakes"
+        print("Invalid Snowflakes input.")
+    end
+end)
+
+-- Ensure leaderstats and Bananas & Snowflakes are created for the player when they join
+game.Players.PlayerAdded:Connect(function(player)
+    -- Create leaderstats folder for the player
+    local leaderstats = Instance.new("Folder")
+    leaderstats.Name = "leaderstats"
+    leaderstats.Parent = player
+
+    -- Create the Bananas stat
+    local bananas = Instance.new("IntValue")
+    bananas.Name = "Bananas"
+    bananas.Value = 0  -- Default Bananas, you can set this to any value
+    bananas.Parent = leaderstats
+
+    -- Create the Snowflakes stat
+    local snowflakes = Instance.new("IntValue")
+    snowflakes.Name = "Snowflakes"
+    snowflakes.Value = 0  -- Default Snowflakes, you can set this to any value
+    snowflakes.Parent = leaderstats
+end)
